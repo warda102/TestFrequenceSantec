@@ -5,6 +5,11 @@ pipeline {
         TARGET_BRANCH = 'dev'  // La branche principale pour le merge
     }
 
+    triggers {
+        // Déclenchement sur un push dans le dépôt GitHub
+        githubPush()
+    }
+
     stages {
         stage('Checkout') {
             steps {
