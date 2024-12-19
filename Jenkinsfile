@@ -7,8 +7,8 @@ pipeline {
     }
 
     environment {
-        // Définir la branche principale comme cible pour les fusions
-        MAIN_BRANCH = 'main'
+        // Définir des variables d'environnement si nécessaire
+        GIT_BRANCH_DEV = 'dev'
     }
 
     stages {
@@ -19,30 +19,29 @@ pipeline {
             }
         }
 
-        stage('Merge to main') {
+        stage('Merge to dev') {
             steps {
                 script {
                     // Récupérer le nom de la branche actuelle
                     def branchName = env.BRANCH_NAME
-                    echo "Branch name: ${branchName}"
-
+                    
                     // Vérifier si la branche actuelle est dev1 ou dev2
                     if (branchName == 'dev1' || branchName == 'dev2') {
-                        // Fusionner automatiquement la branche dev1 ou dev2 vers main
-                        echo "Merging ${branchName} into main"
+                        // Fusionner automatiquement la branche dev1 ou dev2 vers dev
+                        echo "Merging ${branchName} into dev"
 
                         sh """
-                            # Se déplacer sur la branche main
-                            git checkout ${MAIN_BRANCH}
+                            # Se déplacer sur la branche dev
+                            git checkout dev
 
-                            # Récupérer les dernières modifications de main
-                            git pull origin ${MAIN_BRANCH}
+                            # Récupérer les dernières modifications de dev
+                            git pull origin dev
 
-                            # Effectuer le merge de dev1 ou dev2 vers main
+                            # Effectuer le merge de dev1 ou dev2 vers dev
                             git merge ${branchName}
 
-                            # Pousser les modifications sur la branche main
-                            git push origin ${MAIN_BRANCH}
+                            # Pousser les modifications sur la branche dev
+                            git push origin dev
                         """
                     } else {
                         echo "No merge needed for this branch: ${branchName}"
@@ -59,11 +58,11 @@ pipeline {
         }
         success {
             // Actions en cas de succès (par exemple, notification)
-            echo "Merge to main completed successfully!"
+            echo "Merge completed successfully!"
         }
         failure {
             // Actions en cas d'échec (par exemple, notification d'erreur)
-            echo "Merge to main failed!"
+            echo "Merge failed!"
         }
     }
 }
